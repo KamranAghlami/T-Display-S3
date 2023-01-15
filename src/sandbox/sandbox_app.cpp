@@ -89,6 +89,9 @@ public:
 
         reset_balls();
 
+        for (size_t i = 0; i < 10; i++)
+            m_voltage_level = 0.9f * m_voltage_level + 0.1f * hardware::battery::get().voltage_level();
+
         auto hud_update = [](lv_timer_t *timer)
         {
             static_cast<sandbox *>(timer->user_data)->update_hud();
@@ -186,7 +189,7 @@ public:
 
     void update_hud()
     {
-        m_voltage_level = 0.8f * m_voltage_level + 0.2f * hardware::battery::get().voltage_level();
+        m_voltage_level = 0.9f * m_voltage_level + 0.1f * hardware::battery::get().voltage_level();
 
         lv_label_set_text_fmt(m_battery_voltage, "Battery: %umv", m_voltage_level);
         lv_label_set_text_fmt(m_ball_count, "Balls: %zu", m_balls.size());
@@ -203,7 +206,7 @@ private:
     lv_timer_t *m_timer = nullptr;
 
     std::vector<ball *> m_balls;
-    uint32_t m_voltage_level;
+    uint32_t m_voltage_level = 0;
 };
 
 application *create_application()
