@@ -1,6 +1,6 @@
 /**
  * @file lv_conf.h
- * Configuration file for v8.3.2
+ * Configuration file for v8.3.4
  */
 
 /*
@@ -78,10 +78,10 @@
  *====================*/
 
 /*Default display refresh period. LVG will redraw changed areas with this period time*/
-#define LV_DISP_DEF_REFR_PERIOD 33.3      /*[ms]*/
+#define LV_DISP_DEF_REFR_PERIOD 30      /*[ms]*/
 
 /*Input device read period in milliseconds*/
-#define LV_INDEV_DEF_READ_PERIOD 33.3     /*[ms]*/
+#define LV_INDEV_DEF_READ_PERIOD 30     /*[ms]*/
 
 /*Use a custom tick source that tells the elapsed time in milliseconds.
  *It removes the need to manually update the tick with `lv_tick_inc()`)*/
@@ -602,7 +602,7 @@
 #if LV_USE_FS_STDIO
     #define LV_FS_STDIO_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
     #define LV_FS_STDIO_PATH ""         /*Set the working directory. File/directory paths will be appended to it.*/
-    #define LV_FS_STDIO_CACHE_SIZE  0   /*>0 to cache this number of bytes in lv_fs_read()*/
+    #define LV_FS_STDIO_CACHE_SIZE 0    /*>0 to cache this number of bytes in lv_fs_read()*/
 #endif
 
 /*API for open, read, etc*/
@@ -666,7 +666,7 @@
 
 /*FFmpeg library for image decoding and playing videos
  *Supports all major image formats so do not enable other image decoder with it*/
-#define LV_USE_FFMPEG  0
+#define LV_USE_FFMPEG 0
 #if LV_USE_FFMPEG
     /*Dump input information to stderr*/
     #define LV_FFMPEG_DUMP_FORMAT 0
@@ -680,7 +680,7 @@
 #define LV_USE_SNAPSHOT 0
 
 /*1: Enable Monkey test*/
-#define LV_USE_MONKEY   0
+#define LV_USE_MONKEY 0
 
 /*1: Enable grid navigation*/
 #define LV_USE_GRIDNAV 0
@@ -757,4 +757,3 @@
 #endif /*LV_CONF_H*/
 
 #endif /*End of "Content enable"*/
- 
