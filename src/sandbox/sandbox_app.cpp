@@ -124,7 +124,7 @@ public:
     {
         auto b = static_cast<ball *>(lv_mem_alloc(sizeof(ball)));
 
-        b->obj_handle = lv_obj_create(m_screen);
+        b->obj_handle = lv_img_create(m_screen);
 
         b->position.x = (m_width / 2) - 16;
         b->position.y = (m_height / 2) - 16;
@@ -142,7 +142,12 @@ public:
 
         lv_obj_set_style_radius(b->obj_handle, 16, LV_STATE_DEFAULT);
         lv_obj_set_style_border_width(b->obj_handle, 0, LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(b->obj_handle, lv_color_make(lv_rand(0, 255), lv_rand(0, 255), lv_rand(0, 255)), LV_STATE_DEFAULT);
+
+        char path[] = "F:balls/ball_0.png";
+
+        path[13] = '0' + lv_rand(0, 7);
+
+        lv_img_set_src(b->obj_handle, path);
 
         m_balls.push_back(b);
     }
