@@ -143,9 +143,9 @@ public:
         lv_obj_set_style_radius(b->obj_handle, 16, LV_STATE_DEFAULT);
         lv_obj_set_style_border_width(b->obj_handle, 0, LV_STATE_DEFAULT);
 
-        char path[] = "F:balls/ball_0.png";
+        char path[] = "F:/balls/ball_0.png";
 
-        path[13] = '0' + lv_rand(0, 7);
+        path[14] = '0' + lv_rand(0, 7);
 
         lv_img_set_src(b->obj_handle, path);
 
