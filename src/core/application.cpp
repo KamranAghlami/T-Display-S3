@@ -60,37 +60,35 @@ application::application()
     lv_display_set_flush_cb(mp_display, flush_cb);
     lv_display_set_user_data(mp_display, &display);
 
-    // lv_indev_drv_init(&m_indev_drv);
+    mp_indev = lv_indev_create();
 
-    // auto read_cb = [](lv_indev_drv_t *drv, lv_indev_data_t *data)
-    // {
-    //     auto event = hardware::button::get_data();
+    auto read_cb = [](lv_indev_t *indev, lv_indev_data_t *data)
+    {
+        auto event = hardware::button::get_data();
 
-    //     switch (event.id)
-    //     {
-    //     case 0b00000001:
-    //         data->key = LV_KEY_UP;
-    //         break;
+        switch (event.id)
+        {
+        case 0b00000001:
+            data->key = LV_KEY_UP;
+            break;
 
-    //     case 0b00000010:
-    //         data->key = LV_KEY_DOWN;
-    //         break;
+        case 0b00000010:
+            data->key = LV_KEY_DOWN;
+            break;
 
-    //     case 0b00000011:
-    //         data->key = LV_KEY_ENTER;
-    //         break;
+        case 0b00000011:
+            data->key = LV_KEY_ENTER;
+            break;
 
-    //     default:
-    //         break;
-    //     }
+        default:
+            break;
+        }
 
-    //     data->state = event.state ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
-    // };
+        data->state = event.state ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
+    };
 
-    // m_indev_drv.type = LV_INDEV_TYPE_KEYPAD;
-    // m_indev_drv.read_cb = read_cb;
-
-    // lv_indev_drv_register(&m_indev_drv);
+    lv_indev_set_type(mp_indev, LV_INDEV_TYPE_KEYPAD);
+    lv_indev_set_read_cb(mp_indev, read_cb);
 
     auto on_create = [](void *userdata)
     {
@@ -120,6 +118,7 @@ application::application()
 
 application::~application()
 {
+    lv_indev_delete(mp_indev);
     lv_display_delete(mp_display);
     free(mp_draw_buf_2);
     free(mp_draw_buf_1);

@@ -25,7 +25,7 @@ private:
     void *mp_draw_buf_1;
     void *mp_draw_buf_2;
     lv_display_t *mp_display;
-    // lv_indev_drv_t m_indev_drv;
+    lv_indev_t *mp_indev;
 
     int64_t m_previous_timestamp = 0;
 };
