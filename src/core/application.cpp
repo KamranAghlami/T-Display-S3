@@ -23,12 +23,19 @@ application::application()
     hardware::button::add(PIN_BUTTON_1, 0b00000001);
     hardware::button::add(PIN_BUTTON_2, 0b00000010);
 
+    lv_init();
+
+    auto tick_get_cb = []() -> uint32_t
+    {
+        return esp_timer_get_time() / 1000ULL;
+    };
+
+    lv_tick_set_cb(tick_get_cb);
+
     auto &display = hardware::display::get();
 
     mp_draw_buf_1 = heap_caps_malloc((LV_COLOR_DEPTH / 8) * display.width() * 16, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
     mp_draw_buf_2 = heap_caps_malloc((LV_COLOR_DEPTH / 8) * display.width() * 16, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
-
-    lv_init();
 
     mp_display = lv_display_create(display.width(), display.height());
 
