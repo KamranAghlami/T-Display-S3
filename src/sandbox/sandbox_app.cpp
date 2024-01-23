@@ -143,11 +143,15 @@ public:
         lv_obj_set_style_radius(b->obj_handle, 16, LV_STATE_DEFAULT);
         lv_obj_set_style_border_width(b->obj_handle, 0, LV_STATE_DEFAULT);
 
+#if 0
         char path[] = "F:/balls/ball_0.png";
 
         path[14] = '0' + lv_rand(0, 7);
 
         lv_img_set_src(b->obj_handle, path);
+#else
+        lv_obj_set_style_bg_color(b->obj_handle, lv_color_make(lv_rand(0, 255), lv_rand(0, 255), lv_rand(0, 255)), LV_STATE_DEFAULT);
+#endif
 
         m_balls.push_back(b);
     }
