@@ -51,8 +51,8 @@
     #define LV_MEM_ADR 0     /*0: unused*/
     /*Instead of an address give a memory allocator that will be called to get a memory pool for LVGL. E.g. my_malloc*/
     #if LV_MEM_ADR == 0
-        #undef LV_MEM_POOL_INCLUDE
-        #undef LV_MEM_POOL_ALLOC
+        #define LV_MEM_POOL_INCLUDE <stdlib.h>
+        #define LV_MEM_POOL_ALLOC malloc
     #endif
 #endif  /*LV_USE_MALLOC == LV_STDLIB_BUILTIN*/
 
@@ -78,7 +78,7 @@
  * - LV_OS_RTTHREAD
  * - LV_OS_WINDOWS
  * - LV_OS_CUSTOM */
-#define LV_USE_OS   LV_OS_FREERTOS
+#define LV_USE_OS   LV_OS_NONE
 
 #if LV_USE_OS == LV_OS_CUSTOM
     #define LV_OS_CUSTOM_INCLUDE <stdint.h>
