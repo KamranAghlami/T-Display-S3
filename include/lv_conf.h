@@ -742,9 +742,9 @@
     /*1: Show the used memory and the memory fragmentation
      * Requires `LV_USE_BUILTIN_MALLOC = 1`
      * Requires `LV_USE_SYSMON = 1`*/
-    #define LV_USE_MEM_MONITOR 1
+    #define LV_USE_MEM_MONITOR 0
     #if LV_USE_MEM_MONITOR
-        #define LV_USE_MEM_MONITOR_POS LV_ALIGN_TOP_RIGHT
+        #define LV_USE_MEM_MONITOR_POS LV_ALIGN_BOTTOM_LEFT
     #endif
 
 #endif /*LV_USE_SYSMON*/
