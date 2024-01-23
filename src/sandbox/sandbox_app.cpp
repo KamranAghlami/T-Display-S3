@@ -122,7 +122,7 @@ public:
 
     void add_ball()
     {
-        auto b = static_cast<ball *>(lv_mem_alloc(sizeof(ball)));
+        auto b = static_cast<ball *>(lv_malloc(sizeof(ball)));
 
         b->obj_handle = lv_img_create(m_screen);
 
@@ -162,7 +162,7 @@ public:
         m_balls.pop_back();
 
         lv_obj_del(b->obj_handle);
-        lv_mem_free(b);
+        lv_free(b);
     }
 
     void reset_balls()
