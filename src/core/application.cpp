@@ -50,6 +50,8 @@ application::application()
 
     auto flush_cb = [](lv_display_t *disp, const lv_area_t *area, uint8_t *pix_map)
     {
+        lv_draw_sw_rgb565_swap(pix_map, (area->x2 - area->x1 + 1) * (area->y2 - area->y1 + 1));
+
         auto display = static_cast<hardware::display *>(lv_display_get_user_data(disp));
 
         display->set_bitmap(area->x1, area->x2, area->y1, area->y2, (uint16_t *)pix_map);
