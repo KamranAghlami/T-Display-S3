@@ -10,6 +10,6 @@ namespace hardware
         };
 
         void mount(type storage_type, const char *mount_point);
-        void unmount(const char *mount_point);
+        void unmount(type storage_type);
     }
 }
