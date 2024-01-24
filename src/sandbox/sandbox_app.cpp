@@ -122,9 +122,9 @@ public:
 
     void add_ball()
     {
-        auto b = static_cast<ball *>(lv_mem_alloc(sizeof(ball)));
+        auto b = static_cast<ball *>(lv_malloc(sizeof(ball)));
 
-        b->obj_handle = lv_img_create(m_screen);
+        b->obj_handle = lv_image_create(m_screen);
 
         b->position.x = (m_width / 2) - 16;
         b->position.y = (m_height / 2) - 16;
@@ -147,7 +147,7 @@ public:
 
         path[14] = '0' + lv_rand(0, 7);
 
-        lv_img_set_src(b->obj_handle, path);
+        lv_image_set_src(b->obj_handle, path);
 
         m_balls.push_back(b);
     }
@@ -162,7 +162,7 @@ public:
         m_balls.pop_back();
 
         lv_obj_del(b->obj_handle);
-        lv_mem_free(b);
+        lv_free(b);
     }
 
     void reset_balls()
