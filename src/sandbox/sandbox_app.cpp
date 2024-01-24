@@ -5,7 +5,7 @@
 #include "hardware/display.h"
 #include "hardware/battery.h"
 
-static const size_t initial_balls = 25;
+static const size_t initial_balls = 50;
 
 struct ball
 {
