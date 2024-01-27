@@ -214,21 +214,7 @@ private:
     uint32_t m_voltage_level = 0;
 };
 
-#include "demos/lv_demos.h"
-
-class demo : public application
-{
-    void on_create() override
-    {
-        lv_demo_benchmark();
-    }
-
-    void on_update(float timestep) override
-    {
-    }
-};
-
 application *create_application()
 {
-    return new demo();
+    return new sandbox();
 }
