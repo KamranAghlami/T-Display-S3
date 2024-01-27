@@ -1,6 +1,6 @@
 /**
  * @file lv_conf.h
- * Configuration file for v8.3.9
+ * Configuration file for v8.3.11
  */
 
 /*
@@ -32,7 +32,7 @@
 /*Enable features to draw on transparent background.
  *It's required if opa, and transform_* style properties are used.
  *Can be also used if the UI is above another layer, e.g. an OSD menu or video player.*/
-#define LV_COLOR_SCREEN_TRANSP 0
+#define LV_COLOR_SCREEN_TRANSP 1
 
 /* Adjust color mix functions rounding. GPUs might calculate color mix (blending) differently.
  * 0: round down, 64: round up from x.75, 128: round up from half, 192: round up from x.25, 254: round up */
@@ -78,10 +78,10 @@
  *====================*/
 
 /*Default display refresh period. LVG will redraw changed areas with this period time*/
-#define LV_DISP_DEF_REFR_PERIOD 33      /*[ms]*/
+#define LV_DISP_DEF_REFR_PERIOD 16      /*[ms]*/
 
 /*Input device read period in milliseconds*/
-#define LV_INDEV_DEF_READ_PERIOD 33     /*[ms]*/
+#define LV_INDEV_DEF_READ_PERIOD 16     /*[ms]*/
 
 /*Use a custom tick source that tells the elapsed time in milliseconds.
  *It removes the need to manually update the tick with `lv_tick_inc()`)*/
@@ -281,14 +281,14 @@
 /*1: Show CPU usage and FPS count*/
 #define LV_USE_PERF_MONITOR 1
 #if LV_USE_PERF_MONITOR
-    #define LV_USE_PERF_MONITOR_POS LV_ALIGN_TOP_RIGHT
+    #define LV_USE_PERF_MONITOR_POS LV_ALIGN_BOTTOM_RIGHT
 #endif
 
 /*1: Show the used memory and the memory fragmentation
  * Requires LV_MEM_CUSTOM = 0*/
 #define LV_USE_MEM_MONITOR 1
 #if LV_USE_MEM_MONITOR
-    #define LV_USE_MEM_MONITOR_POS LV_ALIGN_TOP_LEFT
+    #define LV_USE_MEM_MONITOR_POS LV_ALIGN_BOTTOM_LEFT
 #endif
 
 /*1: Draw random colored rectangles over the redrawn areas*/
@@ -366,10 +366,10 @@
 #define LV_FONT_MONTSERRAT_12 1
 #define LV_FONT_MONTSERRAT_14 1
 #define LV_FONT_MONTSERRAT_16 0
-#define LV_FONT_MONTSERRAT_18 0
+#define LV_FONT_MONTSERRAT_18 1
 #define LV_FONT_MONTSERRAT_20 0
 #define LV_FONT_MONTSERRAT_22 0
-#define LV_FONT_MONTSERRAT_24 0
+#define LV_FONT_MONTSERRAT_24 1
 #define LV_FONT_MONTSERRAT_26 0
 #define LV_FONT_MONTSERRAT_28 0
 #define LV_FONT_MONTSERRAT_30 0
@@ -639,6 +639,13 @@
     #define LV_FS_FATFS_CACHE_SIZE 0    /*>0 to cache this number of bytes in lv_fs_read()*/
 #endif
 
+/*API for LittleFS (library needs to be added separately). Uses lfs_file_open, lfs_file_read, etc*/
+#define LV_USE_FS_LITTLEFS 0
+#if LV_USE_FS_LITTLEFS
+    #define LV_FS_LITTLEFS_LETTER '\0'     /*Set an upper cased letter on which the drive will accessible (e.g. 'A')*/
+    #define LV_FS_LITTLEFS_CACHE_SIZE 0    /*>0 to cache this number of bytes in lv_fs_read()*/
+#endif
+
 /*PNG decoder library*/
 #define LV_USE_PNG 1
 
@@ -670,6 +677,13 @@
         #define LV_FREETYPE_CACHE_FT_FACES 0
         #define LV_FREETYPE_CACHE_FT_SIZES 0
     #endif
+#endif
+
+/*Tiny TTF library*/
+#define LV_USE_TINY_TTF 0
+#if LV_USE_TINY_TTF
+    /*Load TTF data from files*/
+    #define LV_TINY_TTF_FILE_SUPPORT 0
 #endif
 
 /*Rlottie library*/
@@ -735,7 +749,7 @@
  ====================*/
 
 /*Show some widget. It might be required to increase `LV_MEM_SIZE` */
-#define LV_USE_DEMO_WIDGETS 0
+#define LV_USE_DEMO_WIDGETS 1
 #if LV_USE_DEMO_WIDGETS
 #define LV_DEMO_WIDGETS_SLIDESHOW 0
 #endif
@@ -744,7 +758,7 @@
 #define LV_USE_DEMO_KEYPAD_AND_ENCODER 0
 
 /*Benchmark your system*/
-#define LV_USE_DEMO_BENCHMARK 0
+#define LV_USE_DEMO_BENCHMARK 1
 #if LV_USE_DEMO_BENCHMARK
 /*Use RGB565A8 images with 16 bit color depth instead of ARGB8565*/
 #define LV_DEMO_BENCHMARK_RGB565A8 0
