@@ -24,7 +24,8 @@ jobs:
         run: |
           which pio
           ls -lah $(which pio)
-          find / -iname 'boot_app0.bin' 2>/dev/null
+          ls -alh ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin
+          find ~ -iname 'boot_app0.bin' 2>/dev/null
           pio run
           pio run --target buildfs
 
