@@ -23,6 +23,8 @@ jobs:
       - name: Build PlatformIO Project
         run: |
           which pio
+          ls -lah $(which pio)
+          find / -iname 'boot_app0.bin' 2>/dev/null
           pio run
           pio run --target buildfs
 
