@@ -7,17 +7,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cache/pip
             ~/.platformio/.cache
           key: ${{ runner.os }}-pio
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+      - uses: actions/setup-python@v5
 
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
@@ -25,6 +23,7 @@ jobs:
       - name: Build PlatformIO Project
         run: |
           pio run
+          pio run --target buildfs
 
       - name: Package
         if: startsWith(github.ref, 'refs/tags/')
@@ -41,7 +40,7 @@ jobs:
             .pio/build/${{github.event.repository.name}}/firmware.bin
             .pio/build/${{github.event.repository.name}}/partitions.bin
             .pio/build/${{github.event.repository.name}}/spiffs.bin
-            .pio/build/${{github.event.repository.name}}/offsets.json
+            .pio/build/offsets.json
           token: ${{secrets.ACTION_RELEASE_TOKEN}}
           generate_release_notes: true
           make_latest: true
