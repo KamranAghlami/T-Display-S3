@@ -1,11 +1,12 @@
 #include "core/application.h"
 
 #include <vector>
+#include <cmath>
 
 #include "hardware/display.h"
 #include "hardware/battery.h"
 
-static const size_t initial_balls = 25;
+constexpr size_t initial_balls = 25;
 
 struct ball
 {
@@ -29,16 +30,16 @@ class sandbox : public application
 public:
     sandbox() : m_width(hardware::display::get().width()),
                 m_height(hardware::display::get().height()),
+                m_group(lv_group_create()),
                 m_screen(lv_scr_act())
     {
-        lv_group_t *group = lv_group_create();
         lv_indev_t *indev = nullptr;
 
-        while (indev = lv_indev_get_next(indev))
+        while ((indev = lv_indev_get_next(indev)))
             if (lv_indev_get_type(indev) == LV_INDEV_TYPE_KEYPAD)
-                lv_indev_set_group(indev, group);
+                lv_indev_set_group(indev, m_group);
 
-        lv_group_add_obj(group, m_screen);
+        lv_group_add_obj(m_group, m_screen);
 
         auto on_key = [](lv_event_t *e)
         {
@@ -68,8 +69,11 @@ public:
     {
         while (m_balls.size())
             remove_ball();
+
+        lv_group_del(m_group);
     }
 
+private:
     void on_create() override
     {
         lv_obj_clear_flag(m_screen, LV_OBJ_FLAG_SCROLLABLE);
@@ -102,8 +106,8 @@ public:
 
     void on_update(float timestep) override
     {
-        const auto max_x = m_width - 32;
-        const auto max_y = m_height - 32;
+        const auto max_x = m_width - 30;
+        const auto max_y = m_height - 30;
 
         for (const auto ball : m_balls)
         {
@@ -112,6 +116,18 @@ public:
 
             ball->velocity.x = flip_vx ? -ball->velocity.x : ball->velocity.x;
             ball->velocity.y = flip_vy ? -ball->velocity.y : ball->velocity.y;
+
+            for (const auto b : m_balls)
+            {
+                if (b == ball)
+                    continue;
+
+                const auto dx = ball->position.x - b->position.x;
+                const auto dy = ball->position.y - b->position.y;
+
+                if ((dx * dx + dy * dy) <= 1024)
+                    resolve_collision(*b, *ball);
+            }
 
             ball->position.x += ball->velocity.x * timestep;
             ball->position.y += ball->velocity.y * timestep;
@@ -126,8 +142,8 @@ public:
 
         b->obj_handle = lv_image_create(m_screen);
 
-        b->position.x = (m_width / 2) - 16;
-        b->position.y = (m_height / 2) - 16;
+        b->position.x = (m_width / 2) - 15;
+        b->position.y = (m_height / 2) - 15;
         b->velocity.x = lv_rand(50, 150);
         b->velocity.y = lv_rand(50, 150);
 
@@ -137,10 +153,10 @@ public:
         if (lv_rand(0, 1))
             b->velocity.y = -b->velocity.y;
 
-        lv_obj_set_size(b->obj_handle, 32, 32);
+        lv_obj_set_size(b->obj_handle, 30, 30);
         lv_obj_set_pos(b->obj_handle, b->position.x, b->position.y);
 
-        lv_obj_set_style_radius(b->obj_handle, 16, LV_STATE_DEFAULT);
+        lv_obj_set_style_radius(b->obj_handle, 15, LV_STATE_DEFAULT);
         lv_obj_set_style_border_width(b->obj_handle, 0, LV_STATE_DEFAULT);
 
         char path[] = "F:/balls/ball_0.png";
@@ -196,15 +212,48 @@ public:
     {
         m_voltage_level = 0.9f * m_voltage_level + 0.1f * hardware::battery::get().voltage_level();
 
-        lv_label_set_text_fmt(m_battery_voltage, "Battery: %umv", m_voltage_level);
+        lv_label_set_text_fmt(m_battery_voltage, "Battery: %lumv", m_voltage_level);
         lv_label_set_text_fmt(m_ball_count, "Balls: %zu", m_balls.size());
     }
 
-private:
+    void resolve_collision(ball &b1, ball &b2)
+    {
+        const float dx = b2.position.x - b1.position.x;
+        const float dy = b2.position.y - b1.position.y;
+        const float distance = std::sqrt(dx * dx + dy * dy);
+        const float penetration_depth = (15 + 15) - distance;
+        const float normal_x = dx / distance;
+        const float normal_y = dy / distance;
+        const float resolution_distance = penetration_depth / 2;
+
+        b1.position.x -= normal_x * resolution_distance;
+        b1.position.y -= normal_y * resolution_distance;
+        b2.position.x += normal_x * resolution_distance;
+        b2.position.y += normal_y * resolution_distance;
+
+        const float relative_vx = b2.velocity.x - b1.velocity.x;
+        const float relative_vy = b2.velocity.y - b1.velocity.y;
+        const float v_along_normal = relative_vx * normal_x + relative_vy * normal_y;
+
+        if (v_along_normal > 0)
+            return;
+
+        const float j = -(1 + 0.99f) * v_along_normal / 2;
+        const float impulse_x = j * normal_x;
+        const float impulse_y = j * normal_y;
+
+        b1.velocity.x -= impulse_x;
+        b1.velocity.y -= impulse_y;
+        b2.velocity.x += impulse_x;
+        b2.velocity.y += impulse_y;
+    }
+
     const uint16_t m_width;
     const uint16_t m_height;
 
+    lv_group_t *m_group;
     lv_obj_t *m_screen;
+
     lv_obj_t *m_battery_voltage;
     lv_obj_t *m_ball_count;
 
