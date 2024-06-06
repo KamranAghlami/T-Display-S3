@@ -37,6 +37,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin
             .pio/build/${{github.event.repository.name}}/bootloader.bin
             .pio/build/${{github.event.repository.name}}/firmware.bin
             .pio/build/${{github.event.repository.name}}/partitions.bin
