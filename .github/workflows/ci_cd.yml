@@ -22,12 +22,9 @@ jobs:
 
       - name: Build PlatformIO Project
         run: |
-          which pio
-          ls -lah $(which pio)
-          ls -alh ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin
-          find ~ -iname 'boot_app0.bin' 2>/dev/null
           pio run
           pio run --target buildfs
+          pio run -t upload -v 2>/dev/null | grep -e "--chip esp32s3"
 
       - name: Package
         if: startsWith(github.ref, 'refs/tags/')
