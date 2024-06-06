@@ -1,0 +1,77 @@
+name: CI/CD
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Build PlatformIO Project
+        run: |
+          pio run
+
+      - name: Package
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          grep 'storage' partitions.csv | awk -F, '{print $4 " storage.bin"}' | sed 's/^ //g' >> .pio/build/offsets.txt
+          awk '{printf "{\"offset\":\"%s\", \"file\":\"%s\"}\n", $1, $2}' .pio/build/offsets.txt | jq -c -s '.' > .pio/build/offsets.json
+          
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            .pio/build/${{github.event.repository.name}}/bootloader.bin
+            .pio/build/${{github.event.repository.name}}/firmware.bin
+            .pio/build/${{github.event.repository.name}}/partitions.bin
+            .pio/build/${{github.event.repository.name}}/spiffs.bin
+            .pio/build/${{github.event.repository.name}}/offsets.json
+          token: ${{secrets.ACTION_RELEASE_TOKEN}}
+          generate_release_notes: true
+          make_latest: true
+
+      - name: GitHubAssistantBot Preprocess
+        id: preprocess_commits
+        if: success() || failure()
+        run: |
+          commits_json=$(cat <<EOL
+          ${{toJson(github.event.commits)}}
+          EOL
+          )
+  
+          echo "commits=$(echo "$commits_json" | jq -c '[.[] | {message: .message, url: .url}]' || echo "[]")" >> $GITHUB_OUTPUT
+  
+      - name: GitHubAssistantBot
+        if: success() || failure()
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://node-red.geeken.me/github_assistant_bot'
+          data: |
+            {
+              "key": "${{secrets.ASSISTANT_BOT_KEY}}",
+              "actor": "${{github.actor}}",
+              "platform": "${{matrix.board_target}}",
+              "changes": "https://github.com/${{github.repository}}/commit/${{github.sha}}",
+              "commits": ${{steps.preprocess_commits.outputs.commits}},
+              "event": "${{github.event_name}}",
+              "reference": "${{github.ref_name}}",
+              "report": "https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}",
+              "repository": "${{github.repository}}",
+              "status": "${{job.status}}"
+            }

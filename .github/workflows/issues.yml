@@ -1,0 +1,33 @@
+name: Issues
+
+on:
+    - issues
+    - issue_comment
+jobs:
+    runs:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: GitHubAssistantBot Preprocess
+            id: preprocess_url
+            run: |
+              if [[ "${{github.event_name}}" == "issues" ]]; then
+                echo "url=${{github.event.issue.html_url}}" >> $GITHUB_OUTPUT
+              elif [[ "${{github.event_name}}" == "issue_comment" ]]; then
+                echo "url=${{github.event.comment.html_url}}" >> $GITHUB_OUTPUT
+              fi
+
+          - name: GitHubAssistantBot
+            uses: fjogeleit/http-request-action@v1
+            with:
+              url: 'https://node-red.geeken.me/github_assistant_bot'
+              data: |
+                {
+                  "key": "${{secrets.ASSISTANT_BOT_KEY}}",
+                  "actor": "${{github.actor}}",
+                  "action": "${{github.event.action}}",
+                  "event": "${{github.event_name}}",
+                  "repository": "${{github.repository}}",
+                  "title": "${{github.event.issue.title}}",
+                  "url": "${{steps.preprocess_url.outputs.url}}"
+                }
