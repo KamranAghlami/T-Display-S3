@@ -3,16 +3,16 @@
 
 **Features**:
  - Takes care of initializing the hardware.
- - Uses the local RAM for a twin framebuffer setup wih DMA, and Espressif's lcd driver APIs for highest display throughput.
+ - Uses the local RAM for a twin framebuffer setup with DMA, and Espressif's LCD driver APIs for the highest display throughput.
  - Initializes the external PSRAM where it allocates LVGL's working memory on.
- - Mounts the internal flash as an storage medium and makes it available to LVLG as the "F" drive.
- - Maps hardware keys to an lvgl keypad input device with "Up", "Down" and "Enter" key events.
+ - Mounts the internal flash as a storage medium and makes it available to LVLG as the "F:" drive.
+ - Maps hardware keys to an LVGL keypad input device with "Up", "Down" and "Enter" key events.
  - Provides battery voltage readings in millivolts with an API call.
- - Uses latest version of LVGL. (v9.1.0)
+ - Uses the latest version of LVGL. (v9.1.0)
  
  **Partiotion Table**:
 
-The 16MB flash is partitioned as follows, there is 20KBs of space allocated as `nvs` key-value storage, an `otadata` partition and two `app` partitions defined, 2.93MBs each, so OTA updates can be supported as well. And finaly 10.92MBs of space is allocated to the `storage` partition that is available to the user to work with.
+The 16MB flash is partitioned as follows, there are 20KBs of space allocated as `nvs` key-value storage, an `otadata` partition, and two `app` partitions defined, 2.93MBs each, so OTA updates can be supported as well. And finally 10.92MBs of space is allocated to the `storage` partition that is available to the user to work with.
 
 | Name     | Type | SubType | Offset   | Size     |
 |----------|------|---------|----------|----------|
@@ -22,7 +22,7 @@ The 16MB flash is partitioned as follows, there is 20KBs of space allocated as `
 | app1     | app  | ota_1   | 0x300000 | 0x2f0000 |
 | storage  | data | spiffs  | 0x5f0000 | 0xa10000 |
 
-## Getting Stared
+## Getting Started
 It is as easy as inheriting from the `application` class and overriding `on_create` and `on_update` methods. 
 
 Check out the [example.cpp](src/example/example.cpp) file, It's a simple physics simulation application provided to help as a starting point and as an artificial load for testing.
