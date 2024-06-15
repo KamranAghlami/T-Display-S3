@@ -106,13 +106,15 @@ private:
 
     void on_update(float timestep) override
     {
-        const auto max_x = m_width - 30;
-        const auto max_y = m_height - 30;
+        const auto min_x = 15;
+        const auto min_y = 15;
+        const auto max_x = m_width - 15;
+        const auto max_y = m_height - 15;
 
         for (const auto ball : m_balls)
         {
-            const auto flip_vx = (ball->position.x < 0 && ball->velocity.x < 0) || (ball->position.x > max_x && ball->velocity.x > 0);
-            const auto flip_vy = (ball->position.y < 0 && ball->velocity.y < 0) || (ball->position.y > max_y && ball->velocity.y > 0);
+            const auto flip_vx = (ball->position.x < min_x && ball->velocity.x < 0) || (ball->position.x > max_x && ball->velocity.x > 0);
+            const auto flip_vy = (ball->position.y < min_y && ball->velocity.y < 0) || (ball->position.y > max_y && ball->velocity.y > 0);
 
             ball->velocity.x = flip_vx ? -ball->velocity.x : ball->velocity.x;
             ball->velocity.y = flip_vy ? -ball->velocity.y : ball->velocity.y;
@@ -125,14 +127,14 @@ private:
                 const auto dx = ball->position.x - b->position.x;
                 const auto dy = ball->position.y - b->position.y;
 
-                if ((dx * dx + dy * dy) <= 1024)
+                if ((dx * dx + dy * dy) <= 900)
                     resolve_collision(*b, *ball);
             }
 
             ball->position.x += ball->velocity.x * timestep;
             ball->position.y += ball->velocity.y * timestep;
 
-            lv_obj_set_pos(ball->obj_handle, ball->position.x, ball->position.y);
+            lv_obj_set_pos(ball->obj_handle, ball->position.x - 15, ball->position.y - 15);
         }
     }
 
@@ -142,8 +144,8 @@ private:
 
         b->obj_handle = lv_image_create(m_screen);
 
-        b->position.x = (m_width / 2) - 15;
-        b->position.y = (m_height / 2) - 15;
+        b->position.x = (m_width / 2);
+        b->position.y = (m_height / 2);
         b->velocity.x = lv_rand(50, 150);
         b->velocity.y = lv_rand(50, 150);
 
@@ -154,7 +156,7 @@ private:
             b->velocity.y = -b->velocity.y;
 
         lv_obj_set_size(b->obj_handle, 30, 30);
-        lv_obj_set_pos(b->obj_handle, b->position.x, b->position.y);
+        lv_obj_set_pos(b->obj_handle, b->position.x - 15, b->position.y - 15);
 
         lv_obj_set_style_radius(b->obj_handle, 15, LV_STATE_DEFAULT);
         lv_obj_set_style_border_width(b->obj_handle, 0, LV_STATE_DEFAULT);
