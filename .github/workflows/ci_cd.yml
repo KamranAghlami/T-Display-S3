@@ -28,7 +28,8 @@ jobs:
       - name: Package
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          grep 'storage' partitions.csv | awk -F, '{print $4 " storage.bin"}' | sed 's/^ //g' >> .pio/build/offsets.txt
+          platformio run -t upload -v 2>/dev/null | grep -e "--chip esp32s3" | awk '{for (i = 1; i <= NF; i++) {if ($i ~ /^0x[0-9a-fA-F]+$/) offset = $i; else if ($i ~ /\.bin$/) {gsub(/^.*\//, "", $i); print offset, $i}}}' > .pio/build/offsets.txt
+          grep 'storage' partitions.csv | awk -F, '{print $4 " spiffs.bin"}' | sed 's/^ //g' >> .pio/build/offsets.txt
           awk '{printf "{\"offset\":\"%s\", \"file\":\"%s\"}\n", $1, $2}' .pio/build/offsets.txt | jq -c -s '.' > .pio/build/offsets.json
 
       - name: Release
@@ -36,6 +37,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            /home/runner/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin
             .pio/build/${{github.event.repository.name}}/bootloader.bin
             .pio/build/${{github.event.repository.name}}/firmware.bin
             .pio/build/${{github.event.repository.name}}/partitions.bin
