@@ -70,13 +70,13 @@ public:
         while (m_balls.size())
             remove_ball();
 
-        lv_group_del(m_group);
+        lv_group_delete(m_group);
     }
 
 private:
     void on_create() override
     {
-        lv_obj_clear_flag(m_screen, LV_OBJ_FLAG_SCROLLABLE);
+        lv_obj_remove_flag(m_screen, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_set_style_bg_color(m_screen, lv_color_black(), LV_STATE_DEFAULT);
 
         m_battery_voltage = lv_label_create(lv_layer_top());
@@ -179,7 +179,7 @@ private:
 
         m_balls.pop_back();
 
-        lv_obj_del(b->obj_handle);
+        lv_obj_delete(b->obj_handle);
         lv_free(b);
     }
 
@@ -194,7 +194,7 @@ private:
 
             if (app->m_balls.size() == initial_balls)
             {
-                lv_timer_del(app->m_timer);
+                lv_timer_delete(app->m_timer);
 
                 app->m_timer = nullptr;
 
