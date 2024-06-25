@@ -4,7 +4,7 @@
 **Features**:
  - Takes care of initializing the hardware.
  - Uses the local RAM for a twin framebuffer setup with DMA, and Espressif's LCD driver APIs for the highest display throughput.
- - Initializes the external PSRAM where it allocates LVGL's working memory on.
+ - Initializes the external PSRAM where it allocates LVGL's working memory.
  - Mounts the internal flash as a storage medium and makes it available to LVLG as the "F:" drive.
  - Maps hardware keys to an LVGL keypad input device with "Up", "Down" and "Enter" key events.
  - Provides battery voltage readings in millivolts with an API call.
@@ -12,7 +12,7 @@
  
  **Partiotion Table**:
 
-The 16MB flash is partitioned as follows, there are 20KBs of space allocated as `nvs` key-value storage, an `otadata` partition, and two `app` partitions defined, 2.93MBs each, so OTA updates can be supported as well. And finally 10.92MBs of space is allocated to the `storage` partition that is available to the user to work with.
+The 16MB flash is partitioned as follows, there are 20KBs of space allocated as `nvs` key-value storage, an `otadata` partition, and two `app` partitions defined, 2.93MBs each so that OTA updates can be supported as well. Finally, 10.92MBs of space is allocated to the `storage` partition available to the user to work with.
 
 | Name     | Type | SubType | Offset   | Size     |
 |----------|------|---------|----------|----------|
