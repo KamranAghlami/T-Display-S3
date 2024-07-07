@@ -10,7 +10,7 @@
  - Provides battery voltage readings in millivolts with an API call.
  - Uses the latest version of LVGL. (v9.1.0)
  
- **Partiotion Table**:
+ **Partition Table**:
 
 The 16MB flash is partitioned as follows, there are 20KBs of space allocated as `nvs` key-value storage, an `otadata` partition, and two `app` partitions defined, 2.93MBs each so that OTA updates can be supported as well. Finally, 10.92MBs of space is allocated to the `storage` partition available to the user to work with.
 
