@@ -98,7 +98,7 @@ private:
 
         auto hud_update = [](lv_timer_t *timer)
         {
-            static_cast<example *>(timer->user_data)->update_hud();
+            static_cast<example *>(lv_timer_get_user_data(timer))->update_hud();
         };
 
         lv_timer_create(hud_update, 200, this);
@@ -190,7 +190,7 @@ private:
 
         auto timer_cb = [](lv_timer_t *timer)
         {
-            auto app = static_cast<example *>(timer->user_data);
+            auto app = static_cast<example *>(lv_timer_get_user_data(timer));
 
             if (app->m_balls.size() == initial_balls)
             {

@@ -99,7 +99,7 @@ application::application()
 
     auto on_update = [](lv_timer_t *timer)
     {
-        static const auto app = static_cast<application *>(timer->user_data);
+        static const auto app = static_cast<application *>(lv_timer_get_user_data(timer));
 
         auto now = esp_timer_get_time();
         auto timestep = now - app->m_previous_timestamp;
