@@ -1,6 +1,6 @@
 /**
  * @file lv_conf.h
- * Configuration file for v9.2.0
+ * Configuration file for v9.2.2
  */
 
 /*
@@ -94,6 +94,14 @@
 
 #if LV_USE_OS == LV_OS_CUSTOM
     #define LV_OS_CUSTOM_INCLUDE <stdint.h>
+#endif
+#if LV_USE_OS == LV_OS_FREERTOS
+	/*
+	 * Unblocking an RTOS task with a direct notification is 45% faster and uses less RAM
+	 * than unblocking a task using an intermediary object such as a binary semaphore.
+	 * RTOS task notifications can only be used when there is only one task that can be the recipient of the event.
+	 */
+	#define LV_USE_FREERTOS_TASK_NOTIFY 1
 #endif
 
 /*========================
@@ -205,10 +213,16 @@
 #endif
 
 /* Use NXP's PXP on iMX RTxxx platforms. */
-#define LV_USE_DRAW_PXP 0
+#define LV_USE_PXP 0
 
-#if LV_USE_DRAW_PXP
-    #if LV_USE_OS
+#if LV_USE_PXP
+    /* Use PXP for drawing.*/
+    #define LV_USE_DRAW_PXP 1
+
+    /* Use PXP to rotate display.*/
+    #define LV_USE_ROTATE_PXP 0
+
+    #if LV_USE_DRAW_PXP && LV_USE_OS
         /* Use additional draw thread for PXP processing.*/
         #define LV_USE_PXP_DRAW_THREAD 1
     #endif
@@ -276,6 +290,11 @@
     /*1: Print the log with 'printf';
     *0: User need to register a callback with `lv_log_register_print_cb()`*/
     #define LV_LOG_PRINTF 1
+
+    /*Set callback to print the logs.
+     *E.g `my_print`. The prototype should be `void my_print(lv_log_level_t level, const char * buf)`
+     *Can be overwritten by `lv_log_register_print_cb`*/
+    //#define LV_LOG_PRINT_CB
 
     /*1: Enable print timestamp;
      *0: Disable print timestamp*/
